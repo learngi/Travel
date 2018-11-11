@@ -1,0 +1,165 @@
+<section class="vbox" style="background: #eee;">
+  <app-header></app-header>
+  <section>
+    <section class="hbox stretch">
+      <aside class="bg-dark lter aside-md hidden-print" id="nav">
+        <app-leftnav></app-leftnav>
+      </aside>
+      <section id="content">
+        <section class="vbox">
+          <section class="scrollable padder">
+            <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+              <li>
+                <a>
+                  <i class="fa fa-home"></i> Home</a>
+              </li>
+              <li class="active">Academics</li>
+            </ul>
+            <section class="panel panel-default">
+              <header class="panel-heading bg-light">
+                <span class="text-center"> {{message}}</span>
+                <ul class="nav nav-tabs pull-right">
+                    <li *ngIf="showAcademics" (click)="addAcademics()">
+                    <a class="add">
+                      <i class="fa fa-plus text-default"></i> Add </a>
+                  </li>
+                  <li *ngIf="!showAcademics || viewfiles" (click)="back()">
+                    <a class="add">
+                      <i class="fa fa-cog text-default"></i> Back </a>
+                  </li> 
+                </ul>
+                <span class="hidden-sm">Academics</span>
+              </header>
+
+              <!-- <div *ngIf="spinner" style="display: block;text-align:center;">
+                <span class="text-center">
+                  <i class="fa fa-spinner fa-spin fa-2x"></i>
+                </span>
+              </div> -->
+              <div class="panel-body"  style="margin: 10px 0px 0px 0px;">
+
+                <form role="form" [formGroup]="academicForm">
+                  <div class="row">
+                    <div class="form-group col-md-3">
+                      <label>Name</label>
+                      <select class="form-control" name="sub_id" formControlName="c_id">
+                        <option value="0">Select Place</option>
+                        <option *ngFor="let item of subjectList" value="{{item.id}}">{{item.place_name}} 
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>Avalibility</label>
+                      <input type="text" class="form-control" formControlName="avalibility" placeholder="Enter sub_id" trim="blur">
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>Amount</label>
+                      <input type="text" class="form-control" formControlName="amount" placeholder="Enter sub_id" trim="blur">
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>Date</label>
+                   
+                      <p-calendar  formControlName="dt" name="dt " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+                    </div>
+                    <div class="form-group col-md-3 ">
+                      <label>Depature</label>
+                      <input type="text" class="form-control" formControlName="depature" placeholder="Enter depature" trim="blur">
+                  
+                    </div>
+                    <div class="form-group col-md-3 ">
+                      <label>Depature Time</label>
+                  
+                      <p-calendar formControlName="depature_time" name="depature_time " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+                    </div>
+  
+                    <div class="form-group col-md-3 ">
+                      <label>Return Time</label>
+                         
+                      <p-calendar formControlName="return_time" name="return_time " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+                    </div>
+                    <div class="form-group col-md-3 ">
+                      <label>No of Days</label>
+                      <select class="form-control" formControlName="no_of_days">
+                        <option value="1">1 Day</option>
+                        <option value="2">2 Days</option>
+                        <option value="3">3 Days</option>
+                        <option value="4">4 Days</option>
+                        <option value="5">5 Days</option>
+                        <option value="10">10 Days</option>
+                        <option value="15">15 Days</option>
+  
+                      </select>
+                    </div>
+                    <div class="col-md-12" >
+                      <button class="btn btn-info pull-right" (click)="addAddress()" style="cursor: default">
+                        Add +
+                      </button>
+                    </div>
+                  </div>
+                  <div formArrayName="uploadFiles" >
+                    <div class="row" *ngFor="let files of academicForm.controls.uploadFiles.controls; let i=index">
+
+                      <div [formGroupName]="i">
+                          <div class="form-group col-md-2">
+                              <label>Day</label>
+                              <input type="text" id="file" class="form-control" formControlName="day" trim="blur">
+
+                            </div>
+
+                        <div class="form-group col-md-5">
+                          <label>Description</label>
+                          
+                          <textarea class="form-control" formControlName="title" name ="des"></textarea>
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label>Upload</label>
+                          <br>
+                          <span *ngIf="filterData[i] && filterData.length > 0">
+
+                            <i (click)="DownloadAttachment(filterData[i].filename)" style="cursor: pointer;">
+                              <b title="Download Attachment">{{filterData[i].filename }}</b>
+                            </i>
+                            <button class="btn btn-info pull-right" (click)="showUpload(i)" style="position: relative;top: -25px;" title="Upload file">
+                              <span class="fa fa-plus pull-right"></span>
+                            </button>
+                          </span>
+                          <!-- {{showuploadfiles.indexOf(i) !== -1" }} -->
+                          <span *ngIf="academicForm.controls.uploadFiles['controls'][i]['controls'][
+                          'collapse'
+                        ].value == 0">
+                            <input type="file" id="file" multiple (change)="onFileChange($event, i)">
+                          </span>
+                          <span *ngIf="showuploadfiles.indexOf(i) !== -1">
+                            <input type="file" id="file" multiple (change)="onFileChange($event, i)">
+
+                          </span>
+                        </div>
+                        <div class="col-md-2" *ngIf="academicForm.controls.uploadFiles['controls'][i]['controls'][
+                        'collapse'
+                      ].value == 0">
+
+                          <button class="btn btn-danger" *ngIf="academicForm.controls.uploadFiles.controls.length > 1" (click)="removeAddress(i)">
+                            <span class="fa fa-times pull-right"></span>
+                          </button>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12">
+
+                    <button type="submit " [disabled]="!academicForm.valid" class="btn btn-s-md btn-primary pull-right" (click)="saveNews()">Submit</button>
+                    <br>
+                    <br>
+                  </div>
+                </form>
+              </div>
+              <h3 *ngIf="subjectList && subjectList.length == 0" class="text-center">No Subject assigned</h3>
+            </section>
+          </section>
+        </section>
+      </section>
+    </section>
+  </section>
+</section>
