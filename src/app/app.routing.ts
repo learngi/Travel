@@ -18,7 +18,6 @@ const appRoutes: Routes = [
     component: AcademicsComponent,
     canActivate: [AuthGuard]
   },
-
   {
     path: 'images',
     component: ImagesComponent,
