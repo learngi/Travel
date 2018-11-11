@@ -31,7 +31,7 @@ export class AcademicService {
 
   academics(values: any) {
     const url = AppSettings.API.academicsUpload;
-    return this._apiService.callApi(url, 'FILE_UPLOAD', values);
+    return this._apiService.callApi(url, 'POST', values);
   }
   getUploadList(id) {
     const reg_no = id;

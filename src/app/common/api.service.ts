@@ -16,7 +16,7 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ApiService {
-  headers = { headers: new Headers({ 'content-type': 'application/Json' }) };
+  headers = { headers: new Headers({ 'content-type': 'application/json' }) };
   options = new RequestOptions();
 
   constructor(private _http: Http) {}

@@ -10,6 +10,7 @@ import {
 import * as _ from 'underscore';
 import { saveAs } from 'file-saver/FileSaver';
 import { ToastrManager } from 'ng6-toastr-notifications';
+import * as moment from "moment";
 
 @Component({
   selector: 'app-academics',
@@ -52,7 +53,8 @@ export class AcademicsComponent implements OnInit {
       day: [''],
       title: ['', Validators.required],
       documents: ['', Validators.required],
-      collapse: ['0']
+      collapse: ['0'],
+      des: ['']
     });
   }
 
@@ -128,14 +130,22 @@ export class AcademicsComponent implements OnInit {
 
   // save academics
   saveNews() {
-    const formModel = this.prepareSave();
-    this._academicService.academics(formModel).subscribe(data => {
+    // const formModel = this.prepareSave();
+
+    console.log( this.academicForm.value);
+
+    let data = this.academicForm.value;
+    data['date'] = moment(data['date']).format("YYYY-MM-DD");
+        data['depature_time'] = moment(data['depature_time']).format("YYYY-MM-DD HH:mm:ss");        
+    data['return_time'] = moment(data['return_time']).format("YYYY-MM-DD HH:mm:ss");
+    
+    this._academicService.academics({data: this.academicForm.value}).subscribe(data => {
       if (data.success) {
         this.toastr.successToastr('Uploaded Successfully.', 'Success!');
 
         this.getFileList();
         this.academicForm.reset();
-        this.academicForm.controls['c_id'].setValue('0');
+        // this.academicForm.controls['c_id'].setValue('0');
         this.myFiles = [];
       } else {
       }
