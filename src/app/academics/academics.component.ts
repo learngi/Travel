@@ -10,7 +10,7 @@ import {
 import * as _ from 'underscore';
 import { saveAs } from 'file-saver/FileSaver';
 import { ToastrManager } from 'ng6-toastr-notifications';
-import * as moment from "moment";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-academics',
@@ -54,7 +54,6 @@ export class AcademicsComponent implements OnInit {
       title: ['', Validators.required],
       documents: ['', Validators.required],
       collapse: ['0'],
-      des: ['']
     });
   }
 
@@ -105,17 +104,9 @@ export class AcademicsComponent implements OnInit {
     let i = 0;
     arr.forEach(element => {
       files.push({
-        c_id: this.academicForm.controls['c_id'].value,
-        avalibility: this.academicForm['avalibility'].value,
-        amount: this.academicForm['amount'].value,
-        dt: this.academicForm['dt'].value,
-        depature: this.academicForm['depature'].value,
-        depature_time: this.academicForm['depature_time'].value,
-        return_time: this.academicForm['return_time'].value,
-        no_of_days: this.academicForm['no_of_days'].value,
-        day: this.academicForm['day'].value,
+        day: element.day,
         title: element.title,
-        id: element.id
+        id: element.id,
       });
       if (element.documents) {
         input.append(`fileUpload${i}`, element.documents);
@@ -123,23 +114,23 @@ export class AcademicsComponent implements OnInit {
       ++i;
     });
 
-    input.append('documentFiles', JSON.stringify(files));
-
+    input.append('uploadDocuments', JSON.stringify(files));
+    input.append('academicForm', JSON.stringify(this.academicForm.value));
     return input;
   }
 
   // save academics
   saveNews() {
-    // const formModel = this.prepareSave();
+    const formModel = this.prepareSave();
 
     console.log( this.academicForm.value);
 
-    let data = this.academicForm.value;
-    data['date'] = moment(data['date']).format("YYYY-MM-DD");
-        data['depature_time'] = moment(data['depature_time']).format("YYYY-MM-DD HH:mm:ss");        
-    data['return_time'] = moment(data['return_time']).format("YYYY-MM-DD HH:mm:ss");
-    
-    this._academicService.academics({data: this.academicForm.value}).subscribe(data => {
+    // const data = this.academicForm.value;
+    // data['date'] = moment(data['date']).format('YYYY-MM-DD');
+    //     data['depature_time'] = moment(data['depature_time']).format('YYYY-MM-DD HH:mm:ss');
+    // data['return_time'] = moment(data['return_time']).format('YYYY-MM-DD HH:mm:ss');
+
+    this._academicService.academics(formModel).subscribe(data => {
       if (data.success) {
         this.toastr.successToastr('Uploaded Successfully.', 'Success!');
 
