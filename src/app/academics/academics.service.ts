@@ -33,6 +33,10 @@ export class AcademicService {
     const url = AppSettings.API.academicsUpload;
     return this._apiService.callApi(url, 'FILE_UPLOAD', values);
   }
+  academics2(values: any) {
+    const url = AppSettings.API.academicsUpload;
+    return this._apiService.callApi(url, 'FILE_UPLOAD', values);
+  }
   getUploadList(id) {
     const reg_no = id;
     const url = AppSettings.API.getUploadList + `/${reg_no}`;

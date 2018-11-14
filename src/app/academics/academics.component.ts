@@ -97,7 +97,7 @@ export class AcademicsComponent implements OnInit {
     }
   }
 
-  private prepareSave(): any {
+  private prepareSave2(): any {
     const input = new FormData();
     const files = [];
     const arr = this.academicForm.get('uploadFiles').value;
@@ -119,8 +119,82 @@ export class AcademicsComponent implements OnInit {
     return input;
   }
 
+  private prepareSave(): any {
+    const input = new FormData();
+    const files = [];
+    const arr = this.academicForm.value['uploadFiles'];
+    const data = this.academicForm.value;
+    // let dataFeilds = {
+    //   name: temp.c_id,
+    //   availability: temp.availability,
+    //   amount: temp.amount,
+    //   date: temp.date,
+    //   depature: temp.depature,
+    //   depature_time: temp.depature_time,
+    //   return_time: temp.return_time,
+    //   no_of_days: temp.no_of_days,
+    // };
+
+console.log("INPUT", input);
+
+
+    input.append("name", data.c_id);
+    input.append("availability", data.avalibility);
+    input.append("amount", data.amount);
+    input.append("date", moment(data.dt).format("YYYY-MM-DD HH:mm:ss"));
+    input.append("depature", data.depature);
+    input.append("depature_time", moment(data.depature_time).format("YYYY-MM-DD HH:mm:ss"));
+    input.append("return_time", moment(data.return_time).format("YYYY-MM-DD HH:mm:ss"));
+    input.append("no_of_days", data.no_of_days);
+    input.append("uploadFiles", JSON.stringify(arr));
+
+    // let i = 0;
+    // arr.forEach(element => {
+    //   files.push({
+    //     day: element.day,
+    //     title: element.title,
+    //     id: element.id,
+    //   });
+    //   if (element.documents) {
+    //     input.append(`fileUpload${i}`, element.documents);
+    //   }
+    //   ++i;
+    // });
+
+    // input.append('uploadDocuments', JSON.stringify(files));
+    // input.append('academicForm', JSON.stringify(this.academicForm.value));
+    return input;
+  }
+
+
   // save academics
   saveNews() {
+    const formModel = this.prepareSave();
+
+    console.log( this.academicForm.value);
+
+    // const data = this.academicForm.value;
+    // data['date'] = moment(data['date']).format('YYYY-MM-DD');
+    //     data['depature_time'] = moment(data['depature_time']).format('YYYY-MM-DD HH:mm:ss');
+    // data['return_time'] = moment(data['return_time']).format('YYYY-MM-DD HH:mm:ss');
+
+    this._academicService.academics(formModel).subscribe(data => {
+      console.log(data,"response");
+      
+      if (data.success) {
+        this.toastr.successToastr('Uploaded Successfully.', 'Success!');
+
+        this.getFileList();
+        // this.academicForm.reset();
+        // this.academicForm.controls['c_id'].setValue('0');
+        this.myFiles = [];
+      } else {
+      }
+    });
+  }
+
+  // save academics
+  saveNews2() {
     const formModel = this.prepareSave();
 
     console.log( this.academicForm.value);

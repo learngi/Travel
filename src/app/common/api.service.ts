@@ -22,7 +22,7 @@ export class ApiService {
   constructor(private _http: Http) {}
   callApi(url, method, body = null): Observable<any> {
     if (sessionStorage.getItem('token')) {
-      this.token();
+      this.token1();
     }
 
     switch (method.toUpperCase()) {
@@ -32,7 +32,7 @@ export class ApiService {
           .pipe(map((response: Response) => response.json()));
       case 'POST':
         return this._http
-          .post(url, body)
+          .post(url, body, this.options)
           .pipe(map((response: Response) => response.json()));
 
       case 'PATCH':
