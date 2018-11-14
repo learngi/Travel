@@ -135,7 +135,7 @@ export class AcademicsComponent implements OnInit {
     //   no_of_days: temp.no_of_days,
     // };
 
-console.log("INPUT", input);
+
 
 
     input.append("name", data.c_id);
@@ -146,20 +146,25 @@ console.log("INPUT", input);
     input.append("depature_time", moment(data.depature_time).format("YYYY-MM-DD HH:mm:ss"));
     input.append("return_time", moment(data.return_time).format("YYYY-MM-DD HH:mm:ss"));
     input.append("no_of_days", data.no_of_days);
-    input.append("uploadFiles", JSON.stringify(arr));
 
-    // let i = 0;
-    // arr.forEach(element => {
-    //   files.push({
-    //     day: element.day,
-    //     title: element.title,
-    //     id: element.id,
-    //   });
-    //   if (element.documents) {
-    //     input.append(`fileUpload${i}`, element.documents);
-    //   }
-    //   ++i;
-    // });
+    let i = 0;
+    arr.forEach(element => {
+      files.push({
+        day: element.day,
+        description: element.title,
+        image: element.documents.name,
+      });
+      if (element.documents) {
+        input.append(`fileUpload${i}`, element.documents);
+        i++;
+      }
+      
+    });
+
+    
+    input.append("uploadFiles", JSON.stringify(files));
+
+    console.log("INPUT", input);
 
     // input.append('uploadDocuments', JSON.stringify(files));
     // input.append('academicForm', JSON.stringify(this.academicForm.value));
@@ -185,8 +190,8 @@ console.log("INPUT", input);
         this.toastr.successToastr('Uploaded Successfully.', 'Success!');
 
         this.getFileList();
-        // this.academicForm.reset();
-        // this.academicForm.controls['c_id'].setValue('0');
+        this.academicForm.reset();
+        this.academicForm.controls['c_id'].setValue('0');
         this.myFiles = [];
       } else {
       }
