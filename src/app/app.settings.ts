@@ -17,7 +17,12 @@ export class AppSettings {
     READ_MESSAGE: environment.apiUrl + 'readMessage',
     getUploadList: environment.apiUrl + 'getUploadList',
     DOWNLOAD_ATTACHEMENT: environment.apiUrl + 'documents',
-    GET_ALL_FILES: environment.apiUrl + 'files'
+    GET_ALL_FILES: environment.apiUrl + 'files',
+
+
+    // new api's
+    GET_ALL_ACADAMICS_LIST: environment.apiUrl + 'get/acadamics/list',
+    GET_ACADAMICS_DETAILS: environment.apiUrl + 'get/acadamics/list/details'
   };
   public static imagePath = environment.apiUrl + 'image/';
 }

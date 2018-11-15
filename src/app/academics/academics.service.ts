@@ -56,4 +56,15 @@ export class AcademicService {
       new RequestOptions({ responseType: ResponseContentType.Blob })
     );
   }
+
+
+  getAllAcadamicsList() {
+    const url = AppSettings.API.GET_ALL_ACADAMICS_LIST;
+    return this._apiService.callApi(url, 'get', null);
+  }
+
+  getAllAcadamicsDetails(body) {
+    const url = AppSettings.API.GET_ACADAMICS_DETAILS;
+    return this._apiService.callApi(url, 'post', body);
+  }
 }

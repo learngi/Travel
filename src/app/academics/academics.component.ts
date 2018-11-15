@@ -18,6 +18,8 @@ import * as moment from 'moment';
   styleUrls: ['./academics.component.css']
 })
 export class AcademicsComponent implements OnInit {
+  acadamicDetails: any = [];
+  acadamicList: any = [];
   constructor(
     private _academicService: AcademicService,
     private _fb: FormBuilder,
@@ -35,6 +37,7 @@ export class AcademicsComponent implements OnInit {
   message = '';
   ngOnInit() {
     this.getSubjectsList();
+    this.getAllAcadamicsList();
     this.academicForm = this._fb.group({
       c_id: ['0', Validators.required],
       avalibility: [''],
@@ -281,6 +284,32 @@ export class AcademicsComponent implements OnInit {
       this.showuploadfiles = _.without(this.showuploadfiles, i);
     }
   }
+
+  getAllAcadamicsDetails(item){
+this._academicService.getAllAcadamicsDetails({aid: item.aid}).subscribe(details=>{
+console.log(details, "Details Response");
+if (details.success) {
+  this.acadamicDetails = details.data;
+} else {
+  this.acadamicDetails = [];
+}
+
+});
+  }
+
+  getAllAcadamicsList(){
+    this._academicService.getAllAcadamicsList().subscribe(list=>{
+    console.log(list, "Details Response");
+    if (list.success) {
+      this.acadamicList = list.data;
+    } else {
+      this.acadamicList = [];
+    }
+    
+    });
+      }
+
+
 }
 
 // this.showuploadfiles = [];
