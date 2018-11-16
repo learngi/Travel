@@ -27,10 +27,8 @@ export class AcademicsComponent implements OnInit {
   ) {}
   academicForm: FormGroup;
   showAcademics = true;
-  subjectList = [];
+  tourPlaceList = [];
   filterData = [];
-  myFiles: string[] = [];
-  reg_no = sessionStorage.getItem('reg_no');
   c_id = '';
   uploadfiles = [];
   showuploadfiles = [];
@@ -56,7 +54,7 @@ export class AcademicsComponent implements OnInit {
       day: [''],
       title: ['', Validators.required],
       documents: ['', Validators.required],
-      collapse: ['0'],
+      collapse: ['0']
     });
   }
 
@@ -70,24 +68,21 @@ export class AcademicsComponent implements OnInit {
     control.removeAt(i);
   }
 
-  // getupload files
-  getFileList() {
-    this._academicService.getUploadList(this.reg_no).subscribe(data => {
-      if (data.success) {
-        this.uploadfiles = data.data;
-        console.log('dataus', data.data);
-      }
-    });
-  }
   // for faculties
   getSubjectsList() {
     console.log('her');
     this._academicService.getSubjects().subscribe(data => {
       if (data.success) {
-        this.subjectList = data.data;
-        this.getFileList();
+        this.tourPlaceList = data.data;
       }
     });
+  }
+
+  // filter Tour place list
+  filterTours(id) {
+    const temp = _.filter(this.tourPlaceList, (item) => item.id === parseInt(id, 10));
+
+    return temp[0].place_name;
   }
 
   onFileChange(event, i) {
@@ -100,183 +95,76 @@ export class AcademicsComponent implements OnInit {
     }
   }
 
-  private prepareSave2(): any {
-    const input = new FormData();
-    const files = [];
-    const arr = this.academicForm.get('uploadFiles').value;
-    let i = 0;
-    arr.forEach(element => {
-      files.push({
-        day: element.day,
-        title: element.title,
-        id: element.id,
-      });
-      if (element.documents) {
-        input.append(`fileUpload${i}`, element.documents);
-      }
-      ++i;
-    });
-
-    input.append('uploadDocuments', JSON.stringify(files));
-    input.append('academicForm', JSON.stringify(this.academicForm.value));
-    return input;
-  }
-
   private prepareSave(): any {
     const input = new FormData();
     const files = [];
     const arr = this.academicForm.value['uploadFiles'];
     const data = this.academicForm.value;
-    // let dataFeilds = {
-    //   name: temp.c_id,
-    //   availability: temp.availability,
-    //   amount: temp.amount,
-    //   date: temp.date,
-    //   depature: temp.depature,
-    //   depature_time: temp.depature_time,
-    //   return_time: temp.return_time,
-    //   no_of_days: temp.no_of_days,
-    // };
-
-
-
-
-    input.append("name", data.c_id);
-    input.append("availability", data.avalibility);
-    input.append("amount", data.amount);
-    input.append("date", moment(data.dt).format("YYYY-MM-DD HH:mm:ss"));
-    input.append("depature", data.depature);
-    input.append("depature_time", moment(data.depature_time).format("YYYY-MM-DD HH:mm:ss"));
-    input.append("return_time", moment(data.return_time).format("YYYY-MM-DD HH:mm:ss"));
-    input.append("no_of_days", data.no_of_days);
+    input.append('name', data.c_id);
+    input.append('availability', data.avalibility);
+    input.append('amount', data.amount);
+    input.append('date', moment(data.dt).format('YYYY-MM-DD HH:mm:ss'));
+    input.append('depature', data.depature);
+    input.append(
+      'depature_time',
+      moment(data.depature_time).format('YYYY-MM-DD HH:mm:ss')
+    );
+    input.append(
+      'return_time',
+      moment(data.return_time).format('YYYY-MM-DD HH:mm:ss')
+    );
+    input.append('no_of_days', data.no_of_days);
 
     let i = 0;
     arr.forEach(element => {
       files.push({
         day: element.day,
         description: element.title,
-        image: element.documents.name,
+        image: element.documents.name
       });
       if (element.documents) {
         input.append(`fileUpload${i}`, element.documents);
         i++;
       }
-      
     });
+    input.append('uploadFiles', JSON.stringify(files));
 
-    
-    input.append("uploadFiles", JSON.stringify(files));
-
-    console.log("INPUT", input);
-
-    // input.append('uploadDocuments', JSON.stringify(files));
-    // input.append('academicForm', JSON.stringify(this.academicForm.value));
+    console.log('INPUT', input);
     return input;
   }
-
 
   // save academics
   saveNews() {
     const formModel = this.prepareSave();
 
-    console.log( this.academicForm.value);
-
-    // const data = this.academicForm.value;
-    // data['date'] = moment(data['date']).format('YYYY-MM-DD');
-    //     data['depature_time'] = moment(data['depature_time']).format('YYYY-MM-DD HH:mm:ss');
-    // data['return_time'] = moment(data['return_time']).format('YYYY-MM-DD HH:mm:ss');
+    console.log(this.academicForm.value);
 
     this._academicService.academics(formModel).subscribe(data => {
-      console.log(data,"response");
-      
+      console.log(data, 'response');
+
       if (data.success) {
+        this.back();
         this.toastr.successToastr('Uploaded Successfully.', 'Success!');
 
-        this.getFileList();
         this.academicForm.reset();
         this.academicForm.controls['c_id'].setValue('0');
-        this.myFiles = [];
       } else {
       }
     });
   }
 
-  // save academics
-  saveNews2() {
-    const formModel = this.prepareSave();
 
-    console.log( this.academicForm.value);
 
-    // const data = this.academicForm.value;
-    // data['date'] = moment(data['date']).format('YYYY-MM-DD');
-    //     data['depature_time'] = moment(data['depature_time']).format('YYYY-MM-DD HH:mm:ss');
-    // data['return_time'] = moment(data['return_time']).format('YYYY-MM-DD HH:mm:ss');
 
-    this._academicService.academics(formModel).subscribe(data => {
-      if (data.success) {
-        this.toastr.successToastr('Uploaded Successfully.', 'Success!');
-
-        this.getFileList();
-        this.academicForm.reset();
-        // this.academicForm.controls['c_id'].setValue('0');
-        this.myFiles = [];
-      } else {
-      }
-    });
-  }
-
-  edit(sid) {
-    // this.academicForm.reset();
-    if (sid !== '0') {
-      this.filterData = _.filter(this.uploadfiles, function(item) {
-        return item.c_id === sid;
-      });
-      console.log('fi', this.filterData);
-      if (this.filterData && this.filterData.length > 0) {
-        console.log('f12');
-        this.academicForm.patchValue({
-          c_id: this.filterData[0].c_id
-        });
-        const arr = [];
-        this.filterData.forEach(item => {
-          arr.push(
-            this._fb.group({
-              id: item.id,
-              title: item.title,
-              documents: item.filename,
-              collapse: '1'
-            })
-          );
-        });
-        console.log('d', arr);
-        this.academicForm.setControl('uploadFiles', this._fb.array(arr));
-      }
-      this.initAddress();
-      //
-    }
-  }
-
-  DownloadAttachment(name) {
-    console.log('f', name);
-    this._academicService.downloadAttachment(name).subscribe(res => {
-      this.saveFile(res.blob(), name);
-      // if (data.success) {
-      //   // this.toastr.success('Attachement deleted successfully');
-      // } else {
-      //   this.toastr.error(' Error while deleting the Attachement');
-      // }
-    });
-  }
-  saveFile = (blobContent: Blob, fileName: string) => {
-    const blob = new Blob([blobContent], { type: 'application/octet-stream' });
-    saveAs(blob, fileName);
-  }
 
   addAcademics() {
     this.academicForm.reset();
     this.showAcademics = false;
   }
 
+  back() {
+    this.showAcademics = true;
+  }
   showUpload(i) {
     if (this.showuploadfiles.indexOf(i) === -1) {
       this.showuploadfiles.push(i);
@@ -285,31 +173,29 @@ export class AcademicsComponent implements OnInit {
     }
   }
 
-  getAllAcadamicsDetails(item){
-this._academicService.getAllAcadamicsDetails({aid: item.aid}).subscribe(details=>{
-console.log(details, "Details Response");
-if (details.success) {
-  this.acadamicDetails = details.data;
-} else {
-  this.acadamicDetails = [];
-}
-
-});
+  getAllAcadamicsDetails(item) {
+    this._academicService
+      .getAllAcadamicsDetails({ aid: item.aid })
+      .subscribe(details => {
+        console.log(details, 'Details Response');
+        if (details.success) {
+          this.acadamicDetails = details.data;
+        } else {
+          this.acadamicDetails = [];
+        }
+      });
   }
 
-  getAllAcadamicsList(){
-    this._academicService.getAllAcadamicsList().subscribe(list=>{
-    console.log(list, "Details Response");
-    if (list.success) {
-      this.acadamicList = list.data;
-    } else {
-      this.acadamicList = [];
-    }
-    
-    });
+  getAllAcadamicsList() {
+    this._academicService.getAllAcadamicsList().subscribe(list => {
+      console.log(list, 'Details Response');
+      if (list.success) {
+        this.acadamicList = list.data;
+      } else {
+        this.acadamicList = [];
       }
-
-
+    });
+  }
 }
 
 // this.showuploadfiles = [];
