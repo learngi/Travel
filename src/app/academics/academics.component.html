@@ -13,7 +13,7 @@
                 <a>
                   <i class="fa fa-home"></i> Home</a>
               </li>
-              <li class="active">Academics</li>
+              <li class="active">Tour Description</li>
             </ul>
             <section class="panel panel-default">
               <header class="panel-heading bg-light">
@@ -23,12 +23,12 @@
                     <a class="add">
                       <i class="fa fa-plus text-default"></i> Add </a>
                   </li>
-                  <li *ngIf="!showAcademics || viewfiles" (click)="back()">
+                  <li *ngIf="!showAcademics " (click)="back()">
                     <a class="add">
                       <i class="fa fa-cog text-default"></i> Back </a>
                   </li> 
-                </ul>
-                <span class="hidden-sm">Academics</span>
+                </ul>                
+                <span class="hidden-sm">Tour Description</span>
               </header>
 
               <!-- <div *ngIf="spinner" style="display: block;text-align:center;">
@@ -36,15 +36,41 @@
                   <i class="fa fa-spinner fa-spin fa-2x"></i>
                 </span>
               </div> -->
-              <div class="panel-body"  style="margin: 10px 0px 0px 0px;">
-
+              <div *ngIf = "showAcademics" class="panel-body"  style="margin: 10px 0px 0px 0px;">
+                  <table class="table table-stripped">
+                    <thead>
+                      <tr>
+                        <th>S.no</th>
+                        <th>Location</th>
+                        <th>Avalibility</th>
+                        <th>Amount</th>
+                        <th>No Of Day</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor ="let item of acadamicList; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{filterTours(item.name)}}</td>
+                        <td>{{item.availability}}</td>
+                        <td>{{item.amount}}</td>
+                        <td>{{item.no_of_days}}</td>
+                        <td>
+                          <i class="fa fa-eye"></i>
+                          <i class="fa fa-edit"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </div>
+              <div *ngIf = "!showAcademics" class="panel-body"  style="margin: 10px 0px 0px 0px;">
                 <form role="form" [formGroup]="academicForm">
                   <div class="row">
                     <div class="form-group col-md-3">
                       <label>Name</label>
                       <select class="form-control" name="sub_id" formControlName="c_id">
                         <option value="0">Select Place</option>
-                        <option *ngFor="let item of subjectList" value="{{item.id}}">{{item.place_name}} 
+                        <option *ngFor="let item of tourPlaceList" value="{{item.id}}">{{item.place_name}} 
                         </option>
                       </select>
                     </div>
@@ -114,7 +140,7 @@
                         <div class="form-group col-md-3">
                           <label>Upload</label>
                           <br>
-                          <span *ngIf="filterData[i] && filterData.length > 0">
+                          <!-- <span *ngIf="filterData[i] && filterData.length > 0">
 
                             <i (click)="DownloadAttachment(filterData[i].filename)" style="cursor: pointer;">
                               <b title="Download Attachment">{{filterData[i].filename }}</b>
@@ -122,11 +148,9 @@
                             <button class="btn btn-info pull-right" (click)="showUpload(i)" style="position: relative;top: -25px;" title="Upload file">
                               <span class="fa fa-plus pull-right"></span>
                             </button>
-                          </span>
+                          </span> -->
                           <!-- {{showuploadfiles.indexOf(i) !== -1" }} -->
-                          <span *ngIf="academicForm.controls.uploadFiles['controls'][i]['controls'][
-                          'collapse'
-                        ].value == 0">
+                          <span >
                             <input type="file" id="file" multiple (change)="onFileChange($event, i)">
                           </span>
                           <span *ngIf="showuploadfiles.indexOf(i) !== -1">
@@ -134,7 +158,7 @@
 
                           </span>
                         </div>
-                        <div class="col-md-2" *ngIf="academicForm.controls.uploadFiles['controls'][i]['controls'][
+                        <!-- <div class="col-md-2" *ngIf="academicForm.controls.uploadFiles['controls'][i]['controls'][
                         'collapse'
                       ].value == 0">
 
@@ -142,7 +166,7 @@
                             <span class="fa fa-times pull-right"></span>
                           </button>
 
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                   </div>
@@ -155,7 +179,7 @@
                   </div>
                 </form>
               </div>
-              <h3 *ngIf="subjectList && subjectList.length == 0" class="text-center">No Subject assigned</h3>
+              <h3 *ngIf="tourPlaceList && tourPlaceList.length == 0" class="text-center">No Subject assigned</h3>
             </section>
           </section>
         </section>
