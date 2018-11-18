@@ -22,7 +22,9 @@ export class AppSettings {
 
     // new api's
     GET_ALL_ACADAMICS_LIST: environment.apiUrl + 'get/acadamics/list',
-    GET_ACADAMICS_DETAILS: environment.apiUrl + 'get/acadamics/list/details'
+    GET_ACADAMICS_DETAILS: environment.apiUrl + 'get/acadamics/list/details',
+    UPDATE_ACADAMICS_DETAILS: environment.apiUrl + 'update/acadamics',
+    UPDATE_ACADAMICS_IMAGES_DETAILS: environment.apiUrl + 'update/acadamics/images',
   };
   public static imagePath = environment.apiUrl + 'image/';
 }

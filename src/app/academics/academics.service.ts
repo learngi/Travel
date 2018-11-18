@@ -57,7 +57,6 @@ export class AcademicService {
     );
   }
 
-
   getAllAcadamicsList() {
     const url = AppSettings.API.GET_ALL_ACADAMICS_LIST;
     return this._apiService.callApi(url, 'get', null);
@@ -67,4 +66,15 @@ export class AcademicService {
     const url = AppSettings.API.GET_ACADAMICS_DETAILS;
     return this._apiService.callApi(url, 'post', body);
   }
+
+  updateAcadamicsDetails(body) {
+    const url = AppSettings.API.UPDATE_ACADAMICS_DETAILS;
+    return this._apiService.callApi(url, 'POST', body);
+  }
+
+  updateAcadamicsImageDetails(body) {
+    const url = AppSettings.API.UPDATE_ACADAMICS_IMAGES_DETAILS;
+    return this._apiService.callApi(url, 'FILE_UPLOAD', body);
+  }
+
 }

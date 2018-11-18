@@ -19,15 +19,15 @@
               <header class="panel-heading bg-light">
                 <span class="text-center"> {{message}}</span>
                 <ul class="nav nav-tabs pull-right">
-                    <li *ngIf="showAcademics" (click)="addAcademics()">
+                  <li *ngIf="showPage == 'list'" (click)="addAcademics()">
                     <a class="add">
                       <i class="fa fa-plus text-default"></i> Add </a>
                   </li>
-                  <li *ngIf="!showAcademics " (click)="back()">
+                  <li *ngIf="showPage != 'list'" (click)="back()">
                     <a class="add">
                       <i class="fa fa-cog text-default"></i> Back </a>
-                  </li> 
-                </ul>                
+                  </li>
+                </ul>
                 <span class="hidden-sm">Tour Description</span>
               </header>
 
@@ -36,47 +36,51 @@
                   <i class="fa fa-spinner fa-spin fa-2x"></i>
                 </span>
               </div> -->
-              <div *ngIf = "showAcademics" class="panel-body"  style="margin: 10px 0px 0px 0px;">
-                  <table class="table table-stripped">
-                    <thead>
-                      <tr>
-                        <th>S.no</th>
-                        <th>Location</th>
-                        <th>Avalibility</th>
-                        <th>Amount</th>
-                        <th>No Of Day</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor ="let item of acadamicList; let i = index">
-                        <td>{{i+1}}</td>
-                        <td>{{filterTours(item.name)}}</td>
-                        <td>{{item.availability}}</td>
-                        <td>{{item.amount}}</td>
-                        <td>{{item.no_of_days}}</td>
-                        <td>
-                          <i class="fa fa-eye"></i>
-                          <i class="fa fa-edit"></i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div *ngIf="showPage == 'list'" class="panel-body" style="margin: 10px 0px 0px 0px;">
+                <table class="table table-stripped">
+                  <thead>
+                    <tr>
+                      <th>S.no</th>
+                      <th>Location</th>
+                      <th>Avalibility</th>
+                      <th>Amount</th>
+                      <th>No Of Day</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of acadamicList; let i = index">
+                      <td>{{i+1}}</td>
+                      <td>{{filterTours(item.name)}}</td>
+                      <td>{{item.availability}}</td>
+                      <td>{{item.amount}}</td>
+                      <td>{{item.no_of_days}}</td>
+                      <td>
+                        <i class="fa fa-eye"></i>
+                        <i class="fa fa-edit" (click)="getAllAcadamicsDetails(item, 'edit')" data-toggle="modal"
+                          data-target="#editAcadamicsPOP"></i>
+                        <i class="fa fa-edit" (click)="getAllAcadamicsDetails(item, 'list')" data-toggle="modal"
+                          data-target="#listacademicDetailsPOP"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div *ngIf = "!showAcademics" class="panel-body"  style="margin: 10px 0px 0px 0px;">
+              <div *ngIf="showPage == 'add'" class="panel-body" style="margin: 10px 0px 0px 0px;">
                 <form role="form" [formGroup]="academicForm">
                   <div class="row">
                     <div class="form-group col-md-3">
                       <label>Name</label>
                       <select class="form-control" name="sub_id" formControlName="c_id">
                         <option value="0">Select Place</option>
-                        <option *ngFor="let item of tourPlaceList" value="{{item.id}}">{{item.place_name}} 
+                        <option *ngFor="let item of tourPlaceList" value="{{item.id}}">{{item.place_name}}
                         </option>
                       </select>
                     </div>
                     <div class="form-group col-md-3">
                       <label>Avalibility</label>
-                      <input type="text" class="form-control" formControlName="avalibility" placeholder="Enter sub_id" trim="blur">
+                      <input type="text" class="form-control" formControlName="avalibility" placeholder="Enter sub_id"
+                        trim="blur">
                     </div>
                     <div class="form-group col-md-3">
                       <label>Amount</label>
@@ -84,24 +88,27 @@
                     </div>
                     <div class="form-group col-md-3">
                       <label>Date</label>
-                   
-                      <p-calendar  formControlName="dt" name="dt " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+
+                      <p-calendar formControlName="dt" name="dt " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
                     </div>
                     <div class="form-group col-md-3 ">
                       <label>Depature</label>
-                      <input type="text" class="form-control" formControlName="depature" placeholder="Enter depature" trim="blur">
-                  
+                      <input type="text" class="form-control" formControlName="depature" placeholder="Enter depature"
+                        trim="blur">
+
                     </div>
                     <div class="form-group col-md-3 ">
                       <label>Depature Time</label>
-                  
-                      <p-calendar formControlName="depature_time" name="depature_time " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+
+                      <p-calendar formControlName="depature_time" name="depature_time " [showTime]="true" hourFormat="24"
+                        [showIcon]="true "></p-calendar>
                     </div>
-  
+
                     <div class="form-group col-md-3 ">
                       <label>Return Time</label>
-                         
-                      <p-calendar formControlName="return_time" name="return_time " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+
+                      <p-calendar formControlName="return_time" name="return_time " [showTime]="true" hourFormat="24"
+                        [showIcon]="true "></p-calendar>
                     </div>
                     <div class="form-group col-md-3 ">
                       <label>No of Days</label>
@@ -113,29 +120,29 @@
                         <option value="5">5 Days</option>
                         <option value="10">10 Days</option>
                         <option value="15">15 Days</option>
-  
+
                       </select>
                     </div>
-                    <div class="col-md-12" >
+                    <div class="col-md-12">
                       <button class="btn btn-info pull-right" (click)="addAddress()" style="cursor: default">
                         Add +
                       </button>
                     </div>
                   </div>
-                  <div formArrayName="uploadFiles" >
+                  <div formArrayName="uploadFiles">
                     <div class="row" *ngFor="let files of academicForm.controls.uploadFiles.controls; let i=index">
 
                       <div [formGroupName]="i">
-                          <div class="form-group col-md-2">
-                              <label>Day</label>
-                              <input type="text"  class="form-control" formControlName="day" name="day" trim="blur">
+                        <div class="form-group col-md-2">
+                          <label>Day</label>
+                          <input type="text" class="form-control" formControlName="day" name="day" trim="blur">
 
-                            </div>
+                        </div>
 
                         <div class="form-group col-md-5">
                           <label>Description</label>
-                          
-                          <textarea class="form-control" formControlName="title" name ="des"></textarea>
+
+                          <textarea class="form-control" formControlName="title" name="des"></textarea>
                         </div>
                         <div class="form-group col-md-3">
                           <label>Upload</label>
@@ -150,7 +157,7 @@
                             </button>
                           </span> -->
                           <!-- {{showuploadfiles.indexOf(i) !== -1" }} -->
-                          <span >
+                          <span>
                             <input type="file" id="file" multiple (change)="onFileChange($event, i)">
                           </span>
                           <span *ngIf="showuploadfiles.indexOf(i) !== -1">
@@ -173,7 +180,53 @@
 
                   <div class="col-md-12">
 
-                    <button type="submit " [disabled]="!academicForm.valid" class="btn btn-s-md btn-primary pull-right" (click)="saveNews()">Submit</button>
+                    <button type="submit " [disabled]="!academicForm.valid" class="btn btn-s-md btn-primary pull-right"
+                      (click)="saveNews()">Submit</button>
+                    <br>
+                    <br>
+                  </div>
+                </form>
+              </div>
+              <div *ngIf="showPage == 'editImage'" class="panel-body" style="margin: 10px 0px 0px 0px;">
+                <form role="form" [formGroup]="academicForm">
+                  <div class="row">
+
+                    <div class="form-group col-md-2">
+                      <label>Day</label>
+                      <input type="text" class="form-control" formControlName="day" name="day" trim="blur">
+
+                    </div>
+
+                    <div class="form-group col-md-5">
+                      <label>Description</label>
+
+                      <textarea class="form-control" formControlName="title" name="des"></textarea>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>Upload</label>
+                      <br>
+                      <!-- <span *ngIf="filterData[i] && filterData.length > 0">
+
+                          <i (click)="DownloadAttachment(filterData[i].filename)" style="cursor: pointer;">
+                            <b title="Download Attachment">{{filterData[i].filename }}</b>
+                          </i>
+                          <button class="btn btn-info pull-right" (click)="showUpload(i)" style="position: relative;top: -25px;" title="Upload file">
+                            <span class="fa fa-plus pull-right"></span>
+                          </button>
+                        </span> -->
+                      <!-- {{showuploadfiles.indexOf(i) !== -1" }} -->
+                      <span>
+                        <input type="file" id="file" multiple (change)="onFileChange($event, i)">
+                      </span>
+                      <span *ngIf="showuploadfiles.indexOf(i) !== -1">
+                        <input type="file" id="file" multiple (change)="onFileChange($event, i)">
+
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12">
+                    <button type="save" class="btn btn-s-md btn-primary pull-right" (click)="saveNews()">Update</button>
                     <br>
                     <br>
                   </div>
@@ -187,3 +240,131 @@
     </section>
   </section>
 </section>
+
+
+<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#editacademicDetailsPOP">Open Modal</button> -->
+
+<!-- EDIT ACADAMICS DATA Modal -->
+<div id="editAcadamicsPOP" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Tour Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="panel-body" style="margin: 10px 0px 0px 0px;">
+          <form role="form" [formGroup]="academicForm">
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label>Name</label>
+                <select class="form-control" name="sub_id" formControlName="c_id">
+                  <option value="0">Select Place</option>
+                  <option *ngFor="let item of tourPlaceList" value="{{item.id}}">{{item.place_name}}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group col-md-3">
+                <label>Avalibility</label>
+                <input type="text" class="form-control" formControlName="avalibility" placeholder="Enter sub_id" trim="blur">
+              </div>
+              <div class="form-group col-md-3">
+                <label>Amount</label>
+                <input type="text" class="form-control" formControlName="amount" placeholder="Enter sub_id" trim="blur">
+              </div>
+              <div class="form-group col-md-3">
+                <label>Date</label>
+
+                <p-calendar formControlName="dt" name="dt " dateFormat="yy-mm-dd" [showIcon]="true "></p-calendar>
+              </div>
+              <div class="form-group col-md-3 ">
+                <label>Depature</label>
+                <input type="text" class="form-control" formControlName="depature" placeholder="Enter depature" trim="blur">
+
+              </div>
+              <div class="form-group col-md-3 ">
+                <label>Depature Time</label>
+
+                <p-calendar formControlName="depature_time" name="depature_time " [showTime]="true" [showIcon]="true"
+                  hourFormat="24"></p-calendar>
+              </div>
+
+              <div class="form-group col-md-3 ">
+                <label>Return Time</label>
+
+                <p-calendar formControlName="return_time" name="return_time " [showTime]="true" [showIcon]="true"
+                  hourFormat="24"></p-calendar>
+              </div>
+              <div class="form-group col-md-3 ">
+                <label>No of Days</label>
+                <select class="form-control" formControlName="no_of_days">
+                  <option value="1">1 Day</option>
+                  <option value="2">2 Days</option>
+                  <option value="3">3 Days</option>
+                  <option value="4">4 Days</option>
+                  <option value="5">5 Days</option>
+                  <option value="10">10 Days</option>
+                  <option value="15">15 Days</option>
+
+                </select>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" style="margin-right: 8px;" class="btn btn-s-md btn-primary pull-right"  data-dismiss="modal" (click)="saveNews2()">Submit</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- list ACADAMICS Details DATA Modal -->
+<div id="listacademicDetailsPOP" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+        <div class="panel-body" style="margin: 10px 0px 0px 0px;">
+          <table class="table table-stripped">
+            <thead>
+              <tr>
+                <th>S.no</th>
+                <th>Day</th>
+                <th>Description</th>
+                <th>Image</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of acadamicDetails; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item.day}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.image}}</td>
+                <td>
+                  <i class="fa fa-eye"></i> <!-- image display  server link here -->
+                  <i class="fa fa-edit" (click)="academicDetailsPOP = item; showPage = 'editImage';" data-dismiss="modal"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

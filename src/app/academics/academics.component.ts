@@ -24,15 +24,20 @@ export class AcademicsComponent implements OnInit {
     private _academicService: AcademicService,
     private _fb: FormBuilder,
     public toastr: ToastrManager
-  ) {}
+  ) { }
   academicForm: FormGroup;
   showAcademics = true;
+  showPage = 'list';
   tourPlaceList = [];
   filterData = [];
   c_id = '';
   uploadfiles = [];
   showuploadfiles = [];
   message = '';
+
+  academicPOP: any = new Object();
+  academicDetailsPOP: any = new Object();
+
   ngOnInit() {
     this.getSubjectsList();
     this.getAllAcadamicsList();
@@ -143,28 +148,57 @@ export class AcademicsComponent implements OnInit {
       console.log(data, 'response');
 
       if (data.success) {
-        this.back();
         this.toastr.successToastr('Uploaded Successfully.', 'Success!');
-
+        this.getAllAcadamicsList();
         this.academicForm.reset();
         this.academicForm.controls['c_id'].setValue('0');
+        this.back();
       } else {
       }
     });
   }
 
+  
+  // save academics
+  saveNews2() {
+    const formModel = {
+      aid: this.academicPOP.aid,
+      name: this.academicForm.value.c_id,
+      availability: this.academicForm.value.avalibility,
+      amount: this.academicForm.value.amount,
+      date: moment(this.academicForm.value.dt).format("YYYY-MM-DD HH:mm:ss"),
+      no_of_days: this.academicForm.value.no_of_days,
+      depature: this.academicForm.value.depature,
+      depature_time: moment(this.academicForm.value.depature_time).format('YYYY-MM-DD HH:mm:ss'),
+      return_time: moment(this.academicForm.value.return_time).format('YYYY-MM-DD HH:mm:ss')
+    };
 
+    console.log(this.academicForm.value);
 
-
+    this._academicService.updateAcadamicsDetails(formModel).subscribe(data => {
+      console.log(data, 'response');
+      if (data.success) {
+        this.toastr.successToastr('Uploaded Successfully.', 'Success!');
+        this.getAllAcadamicsList();
+        this.academicForm.reset();
+        this.academicForm.controls['c_id'].setValue('0');
+        this.back();
+      } else {
+      }
+    });
+  }
 
   addAcademics() {
     this.academicForm.reset();
     this.showAcademics = false;
+    this.showPage = 'add';
   }
 
   back() {
     this.showAcademics = true;
+    this.showPage = 'list';
   }
+
   showUpload(i) {
     if (this.showuploadfiles.indexOf(i) === -1) {
       this.showuploadfiles.push(i);
@@ -173,17 +207,34 @@ export class AcademicsComponent implements OnInit {
     }
   }
 
-  getAllAcadamicsDetails(item) {
-    this._academicService
-      .getAllAcadamicsDetails({ aid: item.aid })
-      .subscribe(details => {
-        console.log(details, 'Details Response');
-        if (details.success) {
-          this.acadamicDetails = details.data;
-        } else {
-          this.acadamicDetails = [];
-        }
+  getAllAcadamicsDetails(item, type) {
+    if (type === 'edit') {
+      this.academicPOP = item;
+      this.academicForm.patchValue({
+        c_id: item.name,
+        avalibility: item.availability,
+        amount: item.amount,
+        dt: new Date(item.date),
+        no_of_days: item.no_of_days,
+        depature: item.depature,
+        depature_time: new Date(item.depature_time),
+        return_time: new Date(item.return_time)
       });
+
+      console.log(item, this.academicForm.value, "ITEM");
+
+    } else { // list
+      this._academicService
+        .getAllAcadamicsDetails({ aid: item.aid })
+        .subscribe(details => {
+          console.log(details, 'Details Response');
+          if (details.success) {
+            this.acadamicDetails = details.data;
+          } else {
+            this.acadamicDetails = [];
+          }
+        });
+    }
   }
 
   getAllAcadamicsList() {
